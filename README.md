@@ -1,0 +1,1 @@
+All Redux app here
