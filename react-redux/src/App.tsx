@@ -1,7 +1,11 @@
+import { useState } from "react";
+
 function App() {
+  const [count, setCount] = useState(0);
+  console.log(count);
   return (
     <>
-      <h1>react redux</h1>
+      <h1 onClick={() => setCount(count + 1)}>{count}</h1>
     </>
   );
 }
