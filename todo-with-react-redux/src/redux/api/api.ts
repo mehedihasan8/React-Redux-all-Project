@@ -25,7 +25,6 @@ export const baseApi = createApi({
     }),
     addTodo: builder.mutation({
       query: (data) => {
-        console.log("inside base api =>", data);
         return {
           url: "/task",
           method: "POST",
@@ -34,13 +33,21 @@ export const baseApi = createApi({
       },
       invalidatesTags: ["todo"],
     }),
-    deletTodo: builder.mutation({
-      query: (data) => {
-        console.log("inside base api =>", data);
+    updateTodo: builder.mutation({
+      query: (option) => {
         return {
-          url: "/task",
+          url: `/task/${option.id}`,
+          method: "PUT",
+          body: option.data,
+        };
+      },
+      invalidatesTags: ["todo"],
+    }),
+    deletTodo: builder.mutation({
+      query: (id) => {
+        return {
+          url: `/task/${id}`,
           method: "DELETE",
-          body: data,
         };
       },
       invalidatesTags: ["todo"],
@@ -48,4 +55,9 @@ export const baseApi = createApi({
   }),
 });
 
-export const { useGetDateQuery, useAddTodoMutation } = baseApi;
+export const {
+  useGetDateQuery,
+  useAddTodoMutation,
+  useUpdateTodoMutation,
+  useDeletTodoMutation,
+} = baseApi;
