@@ -1,18 +1,15 @@
 import { Layout, Menu, MenuProps, theme } from "antd";
+import { NavLink, Outlet } from "react-router-dom";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const items: MenuProps["items"] = [
   {
-    key: "1",
-    label: "Deshboard",
+    key: "Dashboard",
+    label: <NavLink to="/admin/dashboard"> Deshboard</NavLink>,
   },
   {
-    key: "2",
-    label: "Profile",
-  },
-  {
-    key: "3",
+    key: "User Mangement",
     label: "User Mangement",
     children: [
       {
@@ -73,11 +70,11 @@ const MainLayout = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <h1>The Main Content here</h1>
+            <Outlet />
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          Mehedi Hasan Foysal ©{new Date().getFullYear()} Created by MHF
         </Footer>
       </Layout>
     </Layout>
