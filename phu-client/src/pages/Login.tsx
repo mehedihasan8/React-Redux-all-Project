@@ -6,6 +6,8 @@ import { TUser, setUser } from "../redux/features/auth/authSlice";
 import { verifyToken } from "../utils/veriflyToken";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import PHForm from "../components/form/PHForm";
+import PHInput from "../components/form/PHInput";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -20,27 +22,28 @@ const Login = () => {
   const [login] = useLoginMutation();
 
   const onSubmit = async (data: FieldValues) => {
-    const res = await login(data).unwrap();
+    console.log(data);
+    // const res = await login(data).unwrap();
 
-    const user = verifyToken(res.data.accessToken) as TUser;
-    dispatch(setUser({ user, token: res.data.accessToken }));
-    toast.success("Login success");
-    navigate(`/${user.role}/dashboard`);
+    // const user = verifyToken(res.data.accessToken) as TUser;
+    // dispatch(setUser({ user, token: res.data.accessToken }));
+    // toast.success("Login success");
+    // navigate(`/${user.role}/dashboard`);
   };
 
   return (
-    <form action="" onSubmit={handleSubmit(onSubmit)}>
+    <PHForm onSubmit={onSubmit}>
       <div>
         <label htmlFor="id">Id:</label>
-        <input type="text" id="id" {...register("id")} />
+        <PHInput type="text" name="id" />
       </div>
       <div>
         <label htmlFor="id">password</label>
-        <input type="text" id="password" {...register("password")} />
+        <PHInput type="text" name="password" />
       </div>
 
       <Button htmlType="submit">Login</Button>
-    </form>
+    </PHForm>
   );
 };
 
