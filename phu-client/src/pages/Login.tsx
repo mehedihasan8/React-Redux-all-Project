@@ -1,12 +1,15 @@
 import { Button } from "antd";
-import { useForm } from "react-hook-form";
+import { FieldValues, useForm } from "react-hook-form";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 import { useAppDispatch } from "../redux/hooks";
-import { setUser } from "../redux/features/auth/authSlice";
+import { TUser, setUser } from "../redux/features/auth/authSlice";
 import { verifyToken } from "../utils/veriflyToken";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Login = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { register, handleSubmit } = useForm({
     defaultValues: {
       id: "A-0001",
@@ -14,17 +17,15 @@ const Login = () => {
     },
   });
 
-  const [login, { data, isError }] = useLoginMutation();
+  const [login] = useLoginMutation();
 
-  console.log("isError =>", isError);
-
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: FieldValues) => {
     const res = await login(data).unwrap();
 
-    const user = verifyToken(res.data.accessToken);
-    console.log("user", user);
-
+    const user = verifyToken(res.data.accessToken) as TUser;
     dispatch(setUser({ user, token: res.data.accessToken }));
+    toast.success("Login success");
+    navigate(`/${user.role}/dashboard`);
   };
 
   return (
