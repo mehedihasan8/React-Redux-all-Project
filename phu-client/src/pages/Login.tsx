@@ -1,4 +1,4 @@
-import { Button } from "antd";
+import { Button, Row } from "antd";
 import { FieldValues, useForm } from "react-hook-form";
 import { useLoginMutation } from "../redux/features/auth/authApi";
 import { useAppDispatch } from "../redux/hooks";
@@ -23,27 +23,27 @@ const Login = () => {
 
   const onSubmit = async (data: FieldValues) => {
     console.log(data);
-    // const res = await login(data).unwrap();
+    const res = await login(data).unwrap();
 
-    // const user = verifyToken(res.data.accessToken) as TUser;
-    // dispatch(setUser({ user, token: res.data.accessToken }));
-    // toast.success("Login success");
-    // navigate(`/${user.role}/dashboard`);
+    const user = verifyToken(res.data.accessToken) as TUser;
+    dispatch(setUser({ user, token: res.data.accessToken }));
+    toast.success("Login success");
+    navigate(`/${user.role}/dashboard`);
   };
 
   return (
-    <PHForm onSubmit={onSubmit}>
-      <div>
-        <label htmlFor="id">Id:</label>
-        <PHInput type="text" name="id" />
-      </div>
-      <div>
-        <label htmlFor="id">password</label>
-        <PHInput type="text" name="password" />
-      </div>
+    <Row justify="center" align="middle" style={{ height: "100vh" }}>
+      <PHForm onSubmit={onSubmit}>
+        <div>
+          <PHInput type="text" name="id" label="Id : " />
+        </div>
+        <div>
+          <PHInput type="text" name="password" label="password" />
+        </div>
 
-      <Button htmlType="submit">Login</Button>
-    </PHForm>
+        <Button htmlType="submit">Login</Button>
+      </PHForm>
+    </Row>
   );
 };
 
