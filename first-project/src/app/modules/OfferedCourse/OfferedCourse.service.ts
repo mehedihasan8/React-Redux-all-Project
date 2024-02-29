@@ -9,6 +9,7 @@ import { SemesterRegistration } from '../semesterRegistration/semesterRegistrati
 import { TOfferedCourse } from './OfferedCourse.interface';
 import { OfferedCourse } from './OfferedCourse.model';
 import { hasTimeConflict } from './OfferedCourse.utils';
+import { Student } from '../student/student.model';
 
 const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   const {
@@ -146,7 +147,153 @@ const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
   };
 };
 const getMyOfferedCoursesFromDB = async (userId: string) => {
-  return null;
+  // find the student
+
+  const student = await Student.findOne({ id: userId });
+
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, 'user is not found');
+  }
+
+  // find current ongoing semester
+
+  const currentOngoingRegistrationSemester = await SemesterRegistration.findOne(
+    {
+      status: 'ONGOING',
+    },
+  );
+
+  if (!currentOngoingRegistrationSemester) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'There is no ongoing semister registion!',
+    );
+  }
+
+  const result = await OfferedCourse.aggregate([
+    {
+      $match: {
+        semesterRegistration: currentOngoingRegistrationSemester?._id,
+        academicDepartment: student?.academicDepartment,
+        academicFaculty: student?.academicFaculty,
+      },
+    },
+    {
+      $lookup: {
+        from: 'courses',
+        localField: 'course',
+        foreignField: '_id',
+        as: 'course',
+      },
+    },
+    {
+      $unwind: '$course',
+    },
+    {
+      $lookup: {
+        from: 'enrolledcourses',
+        let: {
+          currentOngoingRegistrationSemester:
+            currentOngoingRegistrationSemester?._id,
+          currentStudent: student?._id,
+        },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: [
+                      '$semesterRegistration',
+                      '$$currentOngoingRegistrationSemester',
+                    ],
+                  },
+                  {
+                    $eq: ['$student', '$$currentStudent'],
+                  },
+                  {
+                    $eq: ['$isEnrooled', true],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'enrolledCourse',
+      },
+    },
+    {
+      $lookup: {
+        from: 'enrolledcourses',
+        let: { currentStudent: student?._id },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  {
+                    $eq: ['$student', '$$currentStudent'],
+                  },
+                  {
+                    $eq: ['$isCompleted', true],
+                  },
+                ],
+              },
+            },
+          },
+        ],
+        as: 'completedCourses',
+      },
+    },
+    {
+      $addFields: {
+        complededCoursesIds: {
+          $map: {
+            input: '$completedCourses',
+            as: 'completed',
+            in: 'completed.course',
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        isPreRequisitesFullFilled: {
+          $or: [
+            {
+              $eq: ['$course.preRequisiteCourse', []],
+            },
+            {
+              $setIsSubset: [
+                '$course.preRequisiteCourse.course',
+                '$completedCourseIds',
+              ],
+            },
+          ],
+        },
+        isAllreadyEnrolled: {
+          $in: [
+            'course._id',
+            {
+              $map: {
+                input: '$enrolledCourse',
+                as: 'enroll',
+                in: '$$enroll.courses',
+              },
+            },
+          ],
+        },
+      },
+    },
+    {
+      $match: {
+        isAllreadyEnrolled: false,
+        isPreRequisitesFullFilled: true,
+      },
+    },
+  ]);
+
+  return result;
 };
 
 const getSingleOfferedCourseFromDB = async (id: string) => {
