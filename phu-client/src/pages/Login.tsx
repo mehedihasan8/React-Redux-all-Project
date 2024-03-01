@@ -20,9 +20,7 @@ const Login = () => {
   };
 
   const onSubmit = async (data: FieldValues) => {
-    console.log(data);
     const res = await login(data).unwrap();
-
     const user = verifyToken(res.data.accessToken) as TUser;
     dispatch(setUser({ user, token: res.data.accessToken }));
     toast.success("Login success");
@@ -38,7 +36,6 @@ const Login = () => {
         <div>
           <PHInput type="text" name="password" label="password" />
         </div>
-
         <Button htmlType="submit">Login</Button>
       </PHForm>
     </Row>
