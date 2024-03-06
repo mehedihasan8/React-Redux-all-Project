@@ -4,7 +4,7 @@ import {
   TAcademicSemester,
 } from "./academicManagement.type";
 
-export interface TStudent {
+export type TStudent = {
   _id: string;
   id: string;
   user: TUser;
@@ -25,7 +25,7 @@ export interface TStudent {
   academicDepartment: TAcademicDepartment;
   academicFaculty: TAcademicFaculty;
   fullName: string;
-}
+};
 
 export type TUser = {
   _id: string;
