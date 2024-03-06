@@ -47,15 +47,12 @@ const studentDefaultValues = {
 };
 
 const CreateStudent = () => {
-  const [addStudent, { data, error }] = useAddStudentMutation();
-  console.log({ data, error });
+  const [addStudent, { datas, error }] = useAddStudentMutation();
   const { data: sData, isLoading: sIsLoading } =
     useGetAllSemestersQuery(undefined);
 
   const { data: dData, isLoading: dIsLoading } =
     useGetAcademicDepartmentsQuery(undefined);
-
-  console.log("academin data", dData);
 
   const semesterOptions = sData?.data?.map((item) => ({
     value: item._id,
@@ -78,9 +75,9 @@ const CreateStudent = () => {
     formData.append("data", JSON.stringify(studentData));
     formData.append("file", data.image);
 
-    console.log("data", data);
-
-    addStudent(formData);
+    const res = addStudent(formData);
+    console.log("Main data", datas);
+    console.log("res buttom", res);
   };
 
   return (

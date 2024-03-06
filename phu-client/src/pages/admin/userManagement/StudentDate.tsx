@@ -1,4 +1,11 @@
-import { Button, Space, Table, TableColumnsType, TableProps } from "antd";
+import {
+  Button,
+  Pagination,
+  Space,
+  Table,
+  TableColumnsType,
+  TableProps,
+} from "antd";
 import { useState } from "react";
 import { TQueryParam } from "../../../types/global";
 import { useGetAllStudentQuery } from "../../../redux/features/admin/userManagement.api";
@@ -8,8 +15,16 @@ import { Link } from "react-router-dom";
 export type tableData = Pick<TStudent, "name" | "id" | "fullName">;
 
 const StudentData = () => {
-  const [params, setParams] = useState<TQueryParam[] | undefined>(undefined);
-  const { data, isFetching } = useGetAllStudentQuery(params);
+  const [params, setParams] = useState<TQueryParam[]>([]);
+  const [page, setPage] = useState(1);
+  const { data, isFetching } = useGetAllStudentQuery([
+    { name: "limit", value: 2 },
+    { name: "page", value: page },
+    { name: "sort", value: "id" },
+    ...params,
+  ]);
+  const metaData = data?.data?.meta;
+  console.log(metaData);
 
   const tableData = data?.data?.result?.map(({ _id, fullName, id }) => ({
     key: _id,
@@ -74,6 +89,12 @@ const StudentData = () => {
         columns={columns}
         dataSource={tableData}
         onChange={onChange}
+        pagination={false}
+      />
+      <Pagination
+        onChange={(value) => setPage(value)}
+        pageSize={metaData?.limit}
+        total={metaData?.totalPage}
       />
     </div>
   );
