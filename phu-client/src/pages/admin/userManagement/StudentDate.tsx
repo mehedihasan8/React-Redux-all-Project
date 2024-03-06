@@ -12,7 +12,10 @@ import { useGetAllStudentQuery } from "../../../redux/features/admin/userManagem
 import { TStudent } from "../../../types/userManagement.type";
 import { Link } from "react-router-dom";
 
-export type tableData = Pick<TStudent, "name" | "id" | "fullName">;
+export type tableData = Pick<
+  TStudent,
+  "fullName" | "id" | "email" | "_id" | "contactNo" | "gender"
+>;
 
 const StudentData = () => {
   const [params, setParams] = useState<TQueryParam[]>([]);
@@ -23,14 +26,21 @@ const StudentData = () => {
     { name: "sort", value: "id" },
     ...params,
   ]);
-  const metaData = data?.data?.meta;
-  console.log(metaData);
 
-  const tableData = data?.data?.result?.map(({ _id, fullName, id }) => ({
-    key: _id,
-    fullName,
-    id,
-  }));
+  const metaData = data?.data?.meta;
+
+  // console.log(data?.data?.result);
+
+  const tableData = data?.data?.result?.map(
+    ({ _id, fullName, id, email, contactNo, gender }: tableData) => ({
+      key: _id,
+      fullName,
+      id,
+      email,
+      gender,
+      contactNo,
+    })
+  );
 
   const columns: TableColumnsType<tableData> = [
     {
@@ -41,7 +51,21 @@ const StudentData = () => {
       title: "Roll",
       dataIndex: "id",
     },
+    {
+      title: "Email",
 
+      dataIndex: "email",
+    },
+    {
+      title: "Gender",
+
+      dataIndex: "gender",
+    },
+    {
+      title: "Contact No.",
+      key: "contactNo",
+      dataIndex: "contactNo",
+    },
     {
       title: "Action",
       key: "x",

@@ -7,11 +7,13 @@ export type TUserPath = {
   children?: TUserPath[];
 };
 
-export type TSidbarItem = {
-  key: string;
-  label: ReactNode;
-  children?: TSidbarItem[];
-};
+export type TSidbarItem =
+  | {
+      key: string;
+      label: ReactNode;
+      children?: TSidbarItem[];
+    }
+  | undefined;
 
 export type TRoute = {
   path: string;
