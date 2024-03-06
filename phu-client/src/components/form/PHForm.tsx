@@ -34,10 +34,14 @@ const PHForm = ({
   }
 
   const methods = useForm(formConfig);
+  const sumbit = (data) => {
+    onSubmit(data);
+    methods.reset();
+  };
 
   return (
     <FormProvider {...methods}>
-      <Form layout="vertical" onFinish={methods.handleSubmit(onSubmit)}>
+      <Form layout="vertical" onFinish={methods.handleSubmit(sumbit)}>
         {children}
       </Form>
     </FormProvider>
