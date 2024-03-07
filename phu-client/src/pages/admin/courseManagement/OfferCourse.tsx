@@ -1,4 +1,4 @@
-import { Button, Col, Flex } from "antd";
+import { Button, Col, Divider, Flex } from "antd";
 import PHForm from "../../../components/form/PHForm";
 import PHInput from "../../../components/form/PHInput";
 import {
@@ -72,7 +72,8 @@ const OfferCourse = () => {
   };
   return (
     <Flex justify="center" align="center">
-      <Col span={6}>
+      <Col span={12}>
+        <Divider style={{ fontSize: "25px" }}>Offer Course</Divider>
         <PHForm onSubmit={onSubmit}>
           <PHSelect
             name="semesterRegistration"
