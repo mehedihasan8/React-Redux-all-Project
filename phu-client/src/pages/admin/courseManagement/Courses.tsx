@@ -1,7 +1,6 @@
 import { Button, Modal, Table } from "antd";
 import { useGetAllCourseQuery } from "../../../redux/features/admin/courseManagement.api";
 import { useState } from "react";
-import { useGetAcademicFacultiesQuery } from "../../../redux/features/admin/academicManagement.api";
 import PHForm from "../../../components/form/PHForm";
 import PHSelect from "../../../components/form/PHSelect";
 import {
