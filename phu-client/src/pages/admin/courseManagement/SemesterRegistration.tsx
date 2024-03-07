@@ -7,9 +7,12 @@ import PHSelect from "../../../components/form/PHSelect";
 import PHDatePicker from "../../../components/form/PHDatePicker";
 import PHInput from "../../../components/form/PHInput";
 import { semesterStatusOptions } from "../../../constants/semester";
+import { useAddRegistrationSemesterMutation } from "../../../redux/features/admin/courseManagement.api";
+import { TResponse } from "../../../types/global";
 
 const SemesterRegistration = () => {
-  //   const [addSemester] = useAddRegisteredSemesterMutation();
+  const [addSemester] = useAddRegistrationSemesterMutation();
+
   const { data: academicSemester } = useGetAllSemestersQuery([
     { name: "sort", value: "year" },
   ]);
@@ -28,19 +31,17 @@ const SemesterRegistration = () => {
       maxCredit: Number(data.maxCredit),
     };
 
-    console.log(semesterData);
-
-    //    try {
-    //      const res = (await addSemester(semesterData)) as TResponse<any>;
-    //      console.log(res);
-    //      if (res.error) {
-    //        toast.error(res.error.data.message, { id: toastId });
-    //      } else {
-    //        toast.success("Semester created", { id: toastId });
-    //      }
-    //    } catch (err) {
-    //      toast.error("Something went wrong", { id: toastId });
-    //    }
+    try {
+      const res = (await addSemester(semesterData)) as TResponse<any>;
+      console.log(res);
+      if (res.error) {
+        toast.error(res.error.data.message, { id: toastId });
+      } else {
+        toast.success("Semester created", { id: toastId });
+      }
+    } catch (err) {
+      toast.error("Something went wrong", { id: toastId });
+    }
   };
   return (
     <Flex justify="center" align="center">
