@@ -27,6 +27,29 @@ const userManagementApi = baseApi.injectEndpoints({
       },
     }),
 
+    getAllFaculty: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+        if (args) {
+          args?.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: "/faculties",
+          method: "GET",
+          params: params,
+        };
+      },
+
+      transformResponse: (res: TResponseRedux<TStudent[]>) => {
+        return {
+          data: res?.data,
+          meta: res?.meta,
+        };
+      },
+    }),
+
     addStudent: builder.mutation({
       query: (data) => ({
         url: "/users/create-student",
@@ -34,8 +57,20 @@ const userManagementApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+
+    addFaculty: builder.mutation({
+      query: (args) => ({
+        url: `/courses/${args.courseId}/assign-faculties`,
+        method: "PUT",
+        body: args.data,
+      }),
+    }),
   }),
 });
 
-export const { useAddStudentMutation, useGetAllStudentQuery } =
-  userManagementApi;
+export const {
+  useAddStudentMutation,
+  useGetAllStudentQuery,
+  useGetAllFacultyQuery,
+  useAddFacultyMutation,
+} = userManagementApi;
