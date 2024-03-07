@@ -45,6 +45,38 @@ const courseManagementApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["semester"],
     }),
+
+    getAllCourse: builder.query({
+      query: (args) => {
+        const params = new URLSearchParams();
+        if (args) {
+          args?.forEach((item: TQueryParam) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: "/courses",
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["course"],
+
+      transformResponse: (res: TResponseRedux<any>) => {
+        return {
+          data: res?.data,
+          meta: res?.meta,
+        };
+      },
+    }),
+    addCourse: builder.mutation({
+      query: (data) => ({
+        url: "/courses/create-course",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["course"],
+    }),
   }),
 });
 
@@ -52,4 +84,6 @@ export const {
   useAddRegistrationSemesterMutation,
   useGetAllRegestionSemesterQuery,
   useUpdateRegistrationSemesterMutation,
+  useGetAllCourseQuery,
+  useAddCourseMutation,
 } = courseManagementApi;
