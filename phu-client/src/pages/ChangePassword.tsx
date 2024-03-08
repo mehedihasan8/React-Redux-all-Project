@@ -17,8 +17,6 @@ const ChangePassword = () => {
   const onSubmit = async (inputData: FieldValues) => {
     const res = (await ChangePassword(inputData)) as TResponse<any>;
 
-    console.log("res", res);
-
     if (res?.data?.success) {
       toast.success("Password Change Successfully");
       dispatch(Logout());

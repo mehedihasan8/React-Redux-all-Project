@@ -11,17 +11,21 @@ import { useState } from "react";
 import PHTimePicker from "../../../components/form/PHTimePicker";
 import PHSelect from "../../../components/form/PHSelect";
 import {
+  useCreateOfferedCourseMutation,
   useGetAllCourseQuery,
   useGetAllRegestionSemesterQuery,
   useGetCourseFacultiesQuery,
 } from "../../../redux/features/admin/courseManagement.api";
 import { weekDaysOptions } from "../../../constants/global";
+import moment from "moment";
 
 const OfferCourse = () => {
   const [courseId, setCourseId] = useState("");
+  const [addOfferedCourse] = useCreateOfferedCourseMutation();
 
   const { data: semesterRegistrationData } = useGetAllRegestionSemesterQuery([
     { name: "status", value: "ONGOING" },
+    { name: "status", value: "UPCOMING" },
   ]);
 
   const { data: academicFacultyData } = useGetAcademicFacultiesQuery(undefined);
@@ -67,8 +71,16 @@ const OfferCourse = () => {
     })
   );
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    const offeredCourseData = {
+      ...data,
+      maxCapacity: Number(data.maxCapacity),
+      section: Number(data.section),
+      startTime: moment(new Date(data.startTime)).format("HH:mm"),
+      endTime: moment(new Date(data.endTime)).format("HH:mm"),
+    };
+
+    await addOfferedCourse(offeredCourseData);
   };
   return (
     <Flex justify="center" align="center">

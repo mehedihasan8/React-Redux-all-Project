@@ -14,14 +14,14 @@ const Login = () => {
   const navigate = useNavigate();
   const [login] = useLoginMutation();
 
-  const defaultValues = {
-    id: "2026030001",
-    password: "student123",
-  };
   // const defaultValues = {
-  //   id: "A-0001",
-  //   password: "admin123",
+  //   id: "2026030001",
+  //   password: "student123",
   // };
+  const defaultValues = {
+    id: "A-0001",
+    password: "admin123",
+  };
 
   const onSubmit = async (data: FieldValues) => {
     const res = await login(data).unwrap();
